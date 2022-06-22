@@ -1084,6 +1084,12 @@ initpycurl(void)
     insint_c(d, "MAXLIFETIME_CONN", CURLOPT_MAXLIFETIME_CONN);
 #endif
 
+/* todo:non-standard TLS options created for curl-impersonate */
+#if LIBCURL_VERSION_NUM >= MAKE_LIBCURL_VERSION(7, 81, 0)
+    insint_c(d, "SSL_ENABLE_ALPS", CURLOPT_SSL_ENABLE_ALPS);
+    insint_c(d, "SSL_CERT_COMPRESSION", CURLOPT_SSL_CERT_COMPRESSION);
+#endif
+
     insint_m(d, "M_TIMERFUNCTION", CURLMOPT_TIMERFUNCTION);
     insint_m(d, "M_SOCKETFUNCTION", CURLMOPT_SOCKETFUNCTION);
     insint_m(d, "M_PIPELINING", CURLMOPT_PIPELINING);

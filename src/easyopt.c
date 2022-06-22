@@ -211,6 +211,7 @@ do_curl_setopt_string_impl(CurlObject *self, int option, PyObject *obj)
 
     /* Check that the option specified a string as well as the input */
     switch (option) {
+    case CURLOPT_SSL_CERT_COMPRESSION:
     case CURLOPT_CAINFO:
     case CURLOPT_CAPATH:
     case CURLOPT_COOKIE:
