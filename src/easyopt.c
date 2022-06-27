@@ -126,6 +126,7 @@ util_curl_unsetopt(CurlObject *self, int option)
 #endif
 
     CLEAR_OBJECT(CURLOPT_HTTPHEADER, self->httpheader);
+    CLEAR_OBJECT(CURLOPT_HTTPBASEHEADER, self->httpheader);
 #if LIBCURL_VERSION_NUM >= MAKE_LIBCURL_VERSION(7, 37, 0)
     CLEAR_OBJECT(CURLOPT_PROXYHEADER, self->proxyheader);
 #endif
@@ -212,6 +213,8 @@ do_curl_setopt_string_impl(CurlObject *self, int option, PyObject *obj)
     /* Check that the option specified a string as well as the input */
     switch (option) {
     case CURLOPT_SSL_CERT_COMPRESSION:
+    case CURLOPT_SSL_SIG_HASH_ALGS:
+    case CURLOPT_HTTP2_PSEUDO_HEADERS_ORDER:
     case CURLOPT_CAINFO:
     case CURLOPT_CAPATH:
     case CURLOPT_COOKIE:
@@ -733,6 +736,9 @@ do_curl_setopt_list(CurlObject *self, int option, int which, PyObject *obj)
         old_slist_obj = &self->http200aliases;
         break;
     case CURLOPT_HTTPHEADER:
+        old_slist_obj = &self->httpheader;
+        break;
+    case CURLOPT_HTTPBASEHEADER:
         old_slist_obj = &self->httpheader;
         break;
 #if LIBCURL_VERSION_NUM >= MAKE_LIBCURL_VERSION(7, 37, 0)
