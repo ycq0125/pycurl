@@ -7,7 +7,6 @@
 @File    : test.py
 @Software: PyCharm
 """
-import torch
 import pycurl
 from requests import Session
 from requests_curl import CURLAdapter
