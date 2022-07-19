@@ -21,6 +21,7 @@ from requests_curl import CURLAdapter
 #     'user-agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.64 Safari/537.36'
 # ]
 # curl = pycurl.Curl()
+# curl.setopt(pycurl.VERBOSE, 1)
 # curl.setopt(
 #     curl.SSL_CIPHER_LIST,
 #     'TLS_AES_128_GCM_SHA256,TLS_AES_256_GCM_SHA384,TLS_CHACHA20_POLY1305_SHA256,ECDHE-ECDSA-AES128-GCM-SHA256,ECDHE-RSA-AES128-GCM-SHA256,ECDHE-ECDSA-AES256-GCM-SHA384,ECDHE-RSA-AES256-GCM-SHA384,ECDHE-ECDSA-CHACHA20-POLY1305,ECDHE-RSA-CHACHA20-POLY1305,ECDHE-RSA-AES128-SHA,ECDHE-RSA-AES256-SHA,AES128-GCM-SHA256,AES256-GCM-SHA384,AES128-SHA,AES256-SHA'
@@ -57,6 +58,8 @@ if __name__ == '__main__':
         'accept-language': 'zh-CN,zh;q=0.9',
     }
     client = Session()
+    # proxies = {"https":"http://user:pwd@host:port"}
+    proxies = {"https": "https://127.0.0.1:7890"}
     client.mount('https://', CURLAdapter())
     client.headers = {}  # 滞空原始headers，以此保证headers顺序
     info = client.get('https://tls.peet.ws/api/all', headers=headers).text
