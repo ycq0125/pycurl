@@ -56,11 +56,13 @@ if __name__ == '__main__':
         'sec-fetch-user': '?1',
         'sec-fetch-dest': 'document',
         'accept-language': 'zh-CN,zh;q=0.9',
+        # "cookie": ""
     }
     client = Session()
     # proxies = {"https":"http://user:pwd@host:port"}
     proxies = {"https": "https://127.0.0.1:7890"}
-    client.mount('https://', CURLAdapter())
+    client.mount('https://', CURLAdapter(verbose=1))
+    # client.cookies.set('', '')
     client.headers = {}  # 滞空原始headers，以此保证headers顺序
     info = client.get('https://tls.peet.ws/api/all', headers=headers).text
     print(info)

@@ -28,9 +28,11 @@ class CURLAdapter(BaseAdapter):
         max_pool_size=DEFAULT_POOLSIZE,
         pool_block=DEFAULT_POOLBLOCK,
         pool_provider_factory=CURLPoolProvider,
+        verbose=0
     ):
         super(CURLAdapter, self).__init__()
 
+        self._verbose = verbose
         if max_retries == DEFAULT_RETRIES:
             self.max_retries = Retry(0, read=False)
         else:
@@ -100,7 +102,7 @@ class CURLAdapter(BaseAdapter):
             raise retry_error.reason
 
     def _curl_send(
-        self, request, stream=False, timeout=None, verify=True, cert=None, proxies=None
+        self, request, stream=False, timeout=None, verify=True, cert=None, proxies=None,
     ):
         """Translates the `requests.PreparedRequest` into a CURLRequest, performs the request, and then
         translates the repsonse to a `requests.Response`, and if there is any exception, it is also
@@ -108,7 +110,7 @@ class CURLAdapter(BaseAdapter):
         try:
             curl_connection = self._get_curl_connection(request.url, proxies)
             curl_request = CURLRequest(
-                request, timeout=timeout, cert=cert, verify=verify
+                request, timeout=timeout, cert=cert, verify=verify, verbose=self._verbose
             )
 
             response = curl_connection.send(curl_request)

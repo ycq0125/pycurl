@@ -8,7 +8,7 @@ from requests.adapters import DEFAULT_CA_BUNDLE_PATH
 class CURLRequest(object):
     """Representation of a request to be made using CURL."""
 
-    def __init__(self, request, timeout=None, verify=None, cert=None):
+    def __init__(self, request, timeout=None, verify=None, cert=None, verbose=0):
         """Initializes a CURL request from a given prepared request
 
         Args:
@@ -30,6 +30,8 @@ class CURLRequest(object):
         self._verify = verify
         self._curl_options = None
         self._body_stream = None
+        self._verbose = verbose
+        self.cookies = ''
 
     @property
     def use_chunked_upload(self):
@@ -68,7 +70,10 @@ class CURLRequest(object):
             pycurl.SSL_ENABLE_ALPS: 1,
             pycurl.SSL_CERT_COMPRESSION: "brotli",
             pycurl.HTTP2_PSEUDO_HEADERS_ORDER: "masp",
-            pycurl.SSL_ENABLE_NPN: 0
+            pycurl.SSL_ENABLE_NPN: 0,
+            pycurl.VERBOSE: self._verbose,
+            pycurl.FOLLOWLOCATION: 1,
+            pycurl.COOKIEJAR: self.cookies
         }
 
         options.update(self.build_headers_option())
