@@ -95,6 +95,11 @@ class CURLResponse(object):
         if ":" not in header_line:
             return
 
+        # RFC 7231 4.3.6: A server MUST NOT send any Transfer-Encoding
+        # or Content-Length header fields in a 2xx (Successful) response to CONNECT
+        if 200 <= self.http_code < 300 and not self.body.closed:
+            if 'Content-Length' in header_line or 'Transfer-Encoding' in header_line:
+                return
         # Save the header line for later parsing cookies
         self._headers_buff.write(raw_header_line)
 
