@@ -1,7 +1,6 @@
 import os
 import six
 import pycurl
-
 from requests.adapters import DEFAULT_CA_BUNDLE_PATH
 
 
@@ -45,7 +44,6 @@ class CURLRequest(object):
     def options(self):
         if self._curl_options is None:
             self._curl_options = self._build_curl_options()
-
         return self._curl_options
 
     @property
@@ -75,7 +73,6 @@ class CURLRequest(object):
             pycurl.FOLLOWLOCATION: 1,
             pycurl.COOKIEJAR: self.cookies
         }
-
         options.update(self.build_headers_option())
         options.update(self.build_body_options())
         # HTTP method must come after the body options since
@@ -85,7 +82,6 @@ class CURLRequest(object):
         options.update(self.build_timeout_options())
         options.update(self.build_ca_options())
         options.update(self.build_cert_options())
-
         return options
 
     def build_headers_option(self):
@@ -115,8 +111,13 @@ class CURLRequest(object):
 
         elif self._request.body:
             content_type = self._request.headers.get("Content-Type", "").lower()
-            is_encoded_form = content_type == "application/x-www-form-urlencoded"
-
+            # todo:too many MIME_types, match 'multipart/form-data' here;
+            flags = [
+                isinstance(self._request.body, str),
+                isinstance(self._request.body, bytes) and not content_type.startswith('multipart/form-data;'),
+                not hasattr(self._request.body, "read")
+            ]
+            is_encoded_form = True in flags
             if is_encoded_form:
                 return {pycurl.POSTFIELDS: self._request.body}
             else:
@@ -126,12 +127,10 @@ class CURLRequest(object):
                     self._body_stream = six.BytesIO(
                         six.ensure_binary(self._request.body)
                     )
-
                 return {
                     pycurl.UPLOAD: True,
                     pycurl.READFUNCTION: self._body_stream.read,
                 }
-
         else:
             return {}
 
