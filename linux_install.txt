@@ -13,8 +13,8 @@ wget https://github.com/lwthiker/curl-impersonate/archive/refs/heads/main.zip
 unzip main -x
 mv curl-impersonate-main curl-impersonate
 
-sudo apt install build-essential pkg-config cmake ninja-build curl autoconf automake libtool
-sudo apt upgrade build-essential pkg-config cmake ninja-build curl autoconf automake libtool
+sudo apt install build-essential pkg-config cmake ninja-build curl autoconf automake libtool git
+#sudo apt upgrade build-essential pkg-config cmake ninja-build curl autoconf automake libtool
 sudo apt install golang-go unzip
 
 cd curl-impersonate
@@ -33,11 +33,17 @@ curl-impersonate-chrome -V
 wget https://github.com/ycq0125/pycurl/archive/refs/heads/master.zip
 unzip master -x
 mv pycurl-master pycurl
+cd pycurl
 #gcc找到头文件的路径, 注意/MyLib为实际位置
 # 参考C_INCLUDE_PATH=/usr/include/libxml2:/curl_test/curl-impersonate/build/curl-7.84.0/include
 C_INCLUDE_PATH=/usr/include/libxml2:/MyLib
 export C_INCLUDE_PATH
-python3 setup.py install --curl-config=/usr/local/bin/curl-impersonate-chrome-config --openssl-dir=/home/tracker/curl-impersonate/build/boringssl/build
+
+pip3 install --upgrade setuptools
+python3 setup.py install --curl-config=/usr/local/bin/curl-impersonate-chrome-config
 
 python3 test.py
+pip3 show requests
+    Location:/usr/lib/python3/dist-packages
+cp -r ./requests_curl/ /usr/lib/python3/dist-packages
 
