@@ -13,34 +13,37 @@ wget https://github.com/lwthiker/curl-impersonate/archive/refs/heads/main.zip
 unzip main -x
 mv curl-impersonate-main curl-impersonate
 
-sudo apt install build-essential pkg-config cmake ninja-build curl autoconf automake libtool
-sudo apt upgrade build-essential pkg-config cmake ninja-build curl autoconf automake libtool
+sudo apt install build-essential pkg-config cmake ninja-build curl autoconf automake libtool git
+#sudo apt upgrade build-essential pkg-config cmake ninja-build curl autoconf automake libtool
 sudo apt install golang-go unzip
 
 cd curl-impersonate
-autoconf
 mkdir build && cd build
 ../configure
 make chrome-build
 sudo make chrome-install
+sudo ldconfig
 
 curl-impersonate-chrome -V
-    curl 7.81.0 (x86_64-pc-linux-gnu) libcurl/7.81.0 BoringSSL zlib/1.2.11 brotli/1.0.9 nghttp2/1.46.0
-    Release-Date: 2022-01-05
+    curl 7.84.0 (x86_64-pc-linux-gnu) libcurl/7.84.0 BoringSSL zlib/1.2.11 brotli/1.0.9 nghttp2/1.46.0
+    Release-Date: 2022-06-27
     Protocols: dict file ftp ftps gopher gophers http https imap imaps mqtt pop3 pop3s rtsp smb smbs smtp smtps telnet tftp
-    Features: alt-svc AsynchDNS brotli HSTS HTTP2 HTTPS-proxy IPv6 Largefile libz NTLM NTLM_WB SSL UnixSockets
+    Features: alt-svc AsynchDNS brotli HSTS HTTP2 HTTPS-proxy IPv6 Largefile libz NTLM NTLM_WB SSL threadsafe UnixSockets
 
 wget https://github.com/ycq0125/pycurl/archive/refs/heads/master.zip
 unzip master -x
 mv pycurl-master pycurl
-cd pycurl/src
-vi pycurl.h
-`````
-#include "/curl_test/curl-impersonate/build/curl-7.81.0/include/curl/curl.h"
-#include "/curl_test/curl-impersonate/build/curl-7.81.0/include/curl/easy.h"
-#include "/curl_test/curl-impersonate/build/curl-7.81.0/include/curl/multi.h"
-`````
-python3 setup.py install --curl-config=/usr/local/bin/curl-impersonate-chrome-config --openssl-dir=/home/tracker/curl-impersonate/build/boringssl/build
+cd pycurl
+#gcc找到头文件的路径, 注意/MyLib为实际位置
+# 参考C_INCLUDE_PATH=/usr/include/libxml2:/curl_test/curl-impersonate/build/curl-7.84.0/include
+C_INCLUDE_PATH=/usr/include/libxml2:/MyLib
+export C_INCLUDE_PATH
 
-python3 test.py  # 里面的import torch删除一下
+pip3 install --upgrade setuptools
+python3 setup.py install --curl-config=/usr/local/bin/curl-impersonate-chrome-config
+
+python3 test.py
+pip3 show requests
+    Location:/usr/lib/python3/dist-packages
+cp -r ./requests_curl/ /usr/lib/python3/dist-packages
 
