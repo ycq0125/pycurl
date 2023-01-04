@@ -555,7 +555,7 @@ assert_curl_state(const CurlObject *self);
 PYCURL_INTERNAL PyObject *
 do_global_init(PyObject *dummy, PyObject *args);
 PYCURL_INTERNAL PyObject *
-do_global_cleanup(PyObject *dummy);
+do_global_cleanup(PyObject *dummy, PyObject *Py_UNUSED(ignored));
 PYCURL_INTERNAL PyObject *
 do_version_info(PyObject *dummy, PyObject *args);
 
@@ -570,12 +570,12 @@ PYCURL_INTERNAL PyObject *
 do_curl_set_ca_certs(CurlObject *self, PyObject *args);
 #endif
 PYCURL_INTERNAL PyObject *
-do_curl_perform(CurlObject *self);
+do_curl_perform(CurlObject *self, PyObject *Py_UNUSED(ignored));
 PYCURL_INTERNAL PyObject *
-do_curl_perform_rb(CurlObject *self);
+do_curl_perform_rb(CurlObject *self, PyObject *Py_UNUSED(ignored));
 #if PY_MAJOR_VERSION >= 3
 PYCURL_INTERNAL PyObject *
-do_curl_perform_rs(CurlObject *self);
+do_curl_perform_rs(CurlObject *self, PyObject *Py_UNUSED(ignored));
 #else
 # define do_curl_perform_rs do_curl_perform_rb
 #endif
@@ -604,10 +604,10 @@ do_curl_getinfo(CurlObject *self, PyObject *args);
 # define do_curl_getinfo do_curl_getinfo_raw
 #endif
 PYCURL_INTERNAL PyObject *
-do_curl_errstr(CurlObject *self);
+do_curl_errstr(CurlObject *self, PyObject *Py_UNUSED(ignored));
 #if PY_MAJOR_VERSION >= 3
 PYCURL_INTERNAL PyObject *
-do_curl_errstr_raw(CurlObject *self);
+do_curl_errstr_raw(CurlObject *self, PyObject *Py_UNUSED(ignored));
 #else
 # define do_curl_errstr_raw do_curl_errstr
 #endif
@@ -691,6 +691,14 @@ extern PyMethodDef curlmultiobject_methods[];
 # define PYCURL_TYPE_FLAGS Py_TPFLAGS_HAVE_GC | Py_TPFLAGS_BASETYPE
 #else
 # define PYCURL_TYPE_FLAGS Py_TPFLAGS_HAVE_GC | Py_TPFLAGS_HAVE_WEAKREFS | Py_TPFLAGS_BASETYPE
+#endif
+
+#if PY_MAJOR_VERSION >= 3 && PY_MINOR_VERSION >= 8
+# define CPy_TRASHCAN_BEGIN(op, dealloc) Py_TRASHCAN_BEGIN(op, dealloc)
+# define CPy_TRASHCAN_END(op) Py_TRASHCAN_END
+#else
+# define CPy_TRASHCAN_BEGIN(op, dealloc) Py_TRASHCAN_SAFE_BEGIN(op)
+# define CPy_TRASHCAN_END(op) Py_TRASHCAN_SAFE_END(op)
 #endif
 
 /* vi:ts=4:et:nowrap

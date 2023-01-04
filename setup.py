@@ -6,7 +6,7 @@
 
 PACKAGE = "pycurl"
 PY_PACKAGE = "curl"
-VERSION = "7.45.1"
+VERSION = "7.45.2"
 
 import glob, os, re, shlex, sys, subprocess
 from setuptools import setup
@@ -737,12 +737,12 @@ def check_authors():
     authors_para = paras[AUTHORS_PARAGRAPH]
     authors = [author for author in authors_para.strip().split("\n")]
 
-    log = subprocess.check_output(['git', 'log', '--format=%an (%ae)'])
+    log = subprocess.check_output(['git', 'log', '--format=%an (%ae)']).decode()
     for author in log.strip().split("\n"):
         author = author.replace('@', ' at ').replace('(', '<').replace(')', '>')
         if author not in authors:
             authors.append(author)
-    authors.sort()
+    authors.sort(key=lambda s: s.lower())
     paras[AUTHORS_PARAGRAPH] = "\n".join(authors)
     f = open('AUTHORS', 'w')
     try:

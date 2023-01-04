@@ -119,7 +119,7 @@ PYCURL_INTERNAL void
 do_share_dealloc(CurlShareObject *self)
 {
     PyObject_GC_UnTrack(self);
-    Py_TRASHCAN_SAFE_BEGIN(self);
+    CPy_TRASHCAN_BEGIN(self, do_share_dealloc);
 
     Py_CLEAR(self->dict);
     util_share_close(self);
@@ -133,12 +133,12 @@ do_share_dealloc(CurlShareObject *self)
     }
      
     CurlShare_Type.tp_free(self);
-    Py_TRASHCAN_SAFE_END(self);
+    CPy_TRASHCAN_END(self);
 }
 
 
 static PyObject *
-do_share_close(CurlShareObject *self)
+do_share_close(CurlShareObject *self, PyObject *Py_UNUSED(ignored))
 {
     if (check_share_state(self, 2, "close") != 0) {
         return NULL;
@@ -212,7 +212,7 @@ error:
 }
 
 
-static PyObject *do_curlshare_getstate(CurlShareObject *self)
+static PyObject *do_curlshare_getstate(CurlShareObject *self, PyObject *Py_UNUSED(ignored))
 {
     PyErr_SetString(PyExc_TypeError, "CurlShare objects do not support serialization");
     return NULL;

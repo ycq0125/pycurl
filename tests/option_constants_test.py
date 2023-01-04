@@ -373,6 +373,12 @@ class OptionConstantsTest(unittest.TestCase):
         curl.setopt(curl.SSL_OPTIONS, curl.SSLOPT_NO_REVOKE)
         curl.close()
 
+    @util.min_libcurl(7, 55, 0)
+    def test_request_target_option(self):
+        curl = pycurl.Curl()
+        curl.setopt(curl.REQUEST_TARGET, '*')
+        curl.close()
+
     @util.min_libcurl(7, 64, 0)
     def test_http09_allowed_option(self):
         curl = pycurl.Curl()
@@ -495,6 +501,10 @@ class OptionConstantsSettingTest(unittest.TestCase):
     @pytest.mark.http2
     def test_http_version_2prior_knowledge(self):
         self.curl.setopt(self.curl.HTTP_VERSION, self.curl.CURL_HTTP_VERSION_2_PRIOR_KNOWLEDGE)
+
+    @util.min_libcurl(7, 66, 0)
+    def test_http_version_3(self):
+        self.curl.setopt(self.curl.HTTP_VERSION, self.curl.CURL_HTTP_VERSION_3)
 
     @util.min_libcurl(7, 21, 5)
     def test_sockopt_constants(self):
