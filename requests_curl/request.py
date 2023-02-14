@@ -64,6 +64,7 @@ class CURLRequest(object):
             pycurl.URL: self._request.url,
             pycurl.SSL_CIPHER_LIST: self.set_cipher,
             pycurl.HTTP_VERSION: pycurl.CURL_HTTP_VERSION_2_0,
+            pycurl.HTTP2_NO_SERVER_PUSH: 1,
             pycurl.SSLVERSION: pycurl.SSLVERSION_TLSv1_2,
             pycurl.SSL_ENABLE_ALPS: 1,
             pycurl.SSL_CERT_COMPRESSION: "brotli",

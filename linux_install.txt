@@ -17,12 +17,12 @@ sudo apt install build-essential pkg-config cmake ninja-build curl autoconf auto
 #sudo apt upgrade build-essential pkg-config cmake ninja-build curl autoconf automake libtool
 sudo apt install golang-go unzip
 
+# https://github.com/lwthiker/curl-impersonate/blob/main/INSTALL.md
 cd curl-impersonate
 mkdir build && cd build
 ../configure
-make chrome-build
-sudo make chrome-install
-sudo ldconfig
+gmake chrome-build
+sudo gmake chrome-install
 
 curl-impersonate-chrome -V
     curl 7.84.0 (x86_64-pc-linux-gnu) libcurl/7.84.0 BoringSSL zlib/1.2.11 brotli/1.0.9 nghttp2/1.46.0
@@ -35,7 +35,7 @@ unzip master -x
 mv pycurl-master pycurl
 cd pycurl
 #gcc找到头文件的路径, 注意/MyLib为实际位置
-# 参考C_INCLUDE_PATH=/usr/include/libxml2:/curl_test/curl-impersonate/build/curl-7.84.0/include
+# 参考C_INCLUDE_PATH=/usr/include/libxml2:/Users/yubanzhan/curl_test/curl-impersonate/build/curl-7.84.0/include
 C_INCLUDE_PATH=/usr/include/libxml2:/MyLib
 export C_INCLUDE_PATH
 
