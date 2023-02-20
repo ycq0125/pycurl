@@ -2,7 +2,7 @@ import pycurl
 
 from six.moves import queue, range
 
-from .response import CURLResponse
+from .response import CURLResponse, curl_http_versions
 
 
 class PoolException(Exception):
@@ -55,6 +55,7 @@ class CURLHandlerPool(object):
 
         curl_handler.perform()
 
+        response.http_version = curl_http_versions.get(curl_handler.getinfo(pycurl.INFO_HTTP_VERSION))
         response.http_code = curl_handler.getinfo(pycurl.HTTP_CODE)
 
         self.put_handler_back(curl_handler)

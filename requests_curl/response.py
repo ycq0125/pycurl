@@ -1,12 +1,22 @@
 import io
 import six
-
+import pycurl
+import requests
 from http.client import parse_headers
 from requests import Response as RequestResponse
 from requests.utils import get_encoding_from_headers
 from requests.structures import CaseInsensitiveDict
 from requests.cookies import extract_cookies_to_jar
 from urllib3.response import HTTPResponse as URLLib3Rresponse
+
+curl_http_versions = {
+    pycurl.CURL_HTTP_VERSION_NONE: 'Unknown',
+    pycurl.CURL_HTTP_VERSION_1_0: 'HTTP/1.0',
+    pycurl.CURL_HTTP_VERSION_1_1: 'HTTP/1.1',
+    pycurl.CURL_HTTP_VERSION_2: 'HTTP/2',
+    pycurl.CURL_HTTP_VERSION_2_0: 'HTTP/2',
+    pycurl.CURL_HTTP_VERSION_2_PRIOR_KNOWLEDGE: 'HTTP/3',
+}
 
 
 class _MockHTTPResponse:
@@ -31,6 +41,7 @@ class CURLResponse(object):
             curl_request (CURLRequest): the request that originated this response.
         """
 
+        self.http_version = None
         self.curl_request = curl_request
         self.request = curl_request.request
         self.headers = dict()
@@ -53,6 +64,7 @@ class CURLResponse(object):
             body=self.body,
             headers=self.headers,
             status=self.http_code,
+            version=self.http_version,
             request_method=self.request.method,
             reason=self.reason,
             preload_content=False,

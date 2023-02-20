@@ -64,6 +64,7 @@ if __name__ == '__main__':
     client.mount('https://', CURLAdapter(verbose=1))
     # client.cookies.set('', '')
     client.headers = {}  # 滞空原始headers，以此保证headers顺序
-    info = client.get('https://tls.peet.ws/api/all', headers=headers).text
-    print(info)
+    info = client.get('https://tls.peet.ws/api/all', headers=headers)
+    # print(info.http_version)
+    print(info.raw.version)   # http version
 
