@@ -66,7 +66,8 @@ def version_less_than_spec(version_tuple, spec_tuple):
 def pycurl_version_less_than(*spec):
     import pycurl
 
-    version = [int(part) for part in pycurl.version_info()[1].split('-')[0].split('.')]
+    c = pycurl.COMPILE_LIBCURL_VERSION_NUM
+    version = [c >> 16 & 0xFF, c >> 8 & 0xFF, c & 0xFF]
     return version_less_than_spec(version, spec)
 
 def only_python2(fn):
@@ -168,19 +169,8 @@ def only_ssl_backends(*backends):
             if 'https' not in pycurl.version_info()[8]:
                 raise unittest.SkipTest('libcurl does not support ssl')
 
-            # XXX move to pycurl library
-            if 'OpenSSL/' in pycurl.version:
-                current_backend = 'openssl'
-            elif 'GnuTLS/' in pycurl.version:
-                current_backend = 'gnutls'
-            elif 'NSS/' in pycurl.version:
-                current_backend = 'nss'
-            elif 'SecureTransport' in pycurl.version:
-                current_backend = 'secure-transport'
-            else:
-                current_backend = 'none'
-            if current_backend not in backends:
-                raise unittest.SkipTest('SSL backend is %s' % current_backend)
+            if pycurl.COMPILE_SSL_LIB not in backends:
+                raise unittest.SkipTest('SSL backend is %s' % pycurl.COMPILE_SSL_LIB)
 
             return fn(*args, **kwargs)
 
@@ -204,6 +194,18 @@ def only_unix(fn):
     def decorated(*args, **kwargs):
         if sys.platform == 'win32':
             raise unittest.SkipTest('Unix only')
+
+        return fn(*args, **kwargs)
+
+    return decorated
+
+def only_http3(fn):
+    import pycurl
+
+    @functools.wraps(fn)
+    def decorated(*args, **kwargs):
+        if not pycurl.version_info()[4] & pycurl.VERSION_HTTP3:
+            raise unittest.SkipTest('libcurl does not support HTTP version 3')
 
         return fn(*args, **kwargs)
 

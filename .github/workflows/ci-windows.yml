@@ -3,8 +3,16 @@ name: CI-Windows
 on:
   push:
     branches: [ master ]
+    paths-ignore:
+    - '.github/workflows/ci.yml'
+    - '.github/workflows/ci-macos.yml'
+    - '.github/workflows/cibuildwheel.yml'
   pull_request:
     branches: [ master ]
+    paths-ignore:
+    - '.github/workflows/ci.yml'
+    - '.github/workflows/ci-macos.yml'
+    - '.github/workflows/cibuildwheel.yml'
 
 jobs:
   build:
